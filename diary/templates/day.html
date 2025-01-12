@@ -53,7 +53,7 @@
                         {% if diarys %}
                             <h1 class="text-balance text-2xl font-semibold tracking-tight text-slate-600 ">Parabéns, você teve {{total}} recordação anotadas nesse dia.</h1>
                             <br>
-                            <a href="" class="mt-6 rounded-md cursor-pointer bg-red-600 px-3.5 py-2.5 text-xl font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 mt-12">Excluir todas as anotações</a>
+                            <a href="{% url 'delete_day' %}?data={{data}}" class="mt-6 rounded-md cursor-pointer bg-red-600 px-3.5 py-2.5 text-xl font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600 mt-12">Excluir todas as anotações</a>
 
                         {% else %}
                             <h1 class="text-balance text-2xl font-semibold tracking-tight text-slate-600 ">Que pena, nesse dia não foi feito nenhuma anotação.</h1>

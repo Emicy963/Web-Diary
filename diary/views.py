@@ -56,3 +56,9 @@ def day(request):
     format_date = datetime.strptime(date, '%Y-%m-%d')
     diarys = Diary.objects.filter(create_at__gte=format_date).filter(create_at__lte=format_date + timedelta(days=1))
     return render(request, 'day.html', {'diarys': diarys, 'total': diarys.count(), 'data': date})
+
+def delete_day(request):
+    day = datetime.strptime(request.GET.get('data'), '%Y-%m-%d')
+    diarys = Diary.objects.filter(create_at__gte=day).filter(create_at__lte=day + timedelta(days=1))
+    diarys.delete()
+    return redirect('home')
