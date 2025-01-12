@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from .models import People, Diary
 from django.http import HttpResponse
 
 def home(request):
@@ -6,11 +7,45 @@ def home(request):
 
 def write(request):
     if request.method == 'GET':
-        #print(request.method)
-        return render(request, 'write.html')
+        peoples = People.objects.all()
+
+        return render(request, 'write.html', {'peoples': peoples})
     elif request.method == 'POST':
-        titulo = request.POST.get('titulo')
+        title = request.POST.get('titulo')
         tags = request.POST.getlist('tags')
-        pessoas = request.POST.getlist('pessoas')
-        texto = request.POST.get('texto')
-        return HttpResponse(f'{titulo} - {tags} - {pessoas}, - {texto}')
+        peoples = request.POST.getlist('pessoas')
+        text = request.POST.get('texto')
+
+        #if len(title.strip()) == 0 or len(text.strip()):
+        #   """Adicionar Mensagens de Erro"""
+        #    return redirect('write')
+        
+        diary = Diary(
+            title=title,
+            text=text
+        )
+        diary.set_tags(tags)
+        diary.save()
+
+        for i in peoples:
+            people = People.objects.get(id=i)
+            diary.people.add(people)
+        
+        diary.save()
+
+        return HttpResponse(f'{title} - {tags} - {peoples}, - {text}')
+    
+def create_people(request):
+    if request.method == 'GET':
+        return render(request, 'people.html')
+    elif request.method == 'POST':
+        name = request.POST.get('nome')
+        picture = request.FILES.get('foto')
+
+        people = People(
+            name=name,
+            picture=picture
+        )
+        people.save()
+        return redirect('write')
+
