@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 from .models import People, Diary
+from datetime import datetime, timedelta
 from django.http import HttpResponse
 
 def home(request):
-    return render(request, 'home.html')
+    texts = Diary.objects.all().order_by('create_at')[:3]
+    return render(request, 'home.html', {'texts': texts})
 
 def write(request):
     if request.method == 'GET':
@@ -49,3 +51,8 @@ def create_people(request):
         people.save()
         return redirect('write')
 
+def day(request):
+    date = request.GET.get('data')
+    format_date = datetime.strptime(date, '%Y-%m-%d')
+    diarys = Diary.objects.filter(create_at__gte=format_date).filter(create_at__lte=format_date + timedelta(days=1))
+    return render(request, 'day.html', {'diarys': diarys, 'total': diarys.count(), 'data': date})
