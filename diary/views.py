@@ -5,7 +5,14 @@ from django.http import HttpResponse
 
 def home(request):
     texts = Diary.objects.all().order_by('create_at')[:3]
-    return render(request, 'home.html', {'texts': texts})
+    peoples = People.objects.all()
+    names = [people.name for people in peoples]
+    qtds = []
+    for people in peoples:
+        qtd = Diary.objects.filter(people=people).count()
+        qtds.append(qtd)
+
+    return render(request, 'home.html', {'texts': texts, 'names': names, 'qtds': qtds})
 
 def write(request):
     if request.method == 'GET':
